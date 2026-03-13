@@ -34,15 +34,14 @@ export default function ProgressRing({
       useNativeDriver: false,
     }).start();
     return () => animValue.removeListener(listener);
-  }, [progress]);
+  }, [progress, animValue]);
 
   const strokeDashoffset = circumference - (displayProgress / 100) * circumference;
   const center = size / 2;
 
   return (
     <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
-      <Svg width={size} height={size} style={{ position: 'absolute' }}>
-        <G rotation="-90" origin={`${center}, ${center}`}>
+      <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ position: 'absolute', transform: [{ rotate: '-90deg' }] }}>        <G>
           <Circle
             cx={center}
             cy={center}
