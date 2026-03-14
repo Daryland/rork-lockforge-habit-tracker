@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   Animated,
   Pressable,
@@ -31,6 +31,7 @@ function formatDay() {
 export default function TodayScreen() {
   const router = useRouter();
   const { todayHabits, todayCompleted, todayTotal, overallStreak, isPro, startSession, completeHabit, isTodayComplete } = useHabits();
+  const [bannerDismissed, setBannerDismissed] = useState(false);
   const fabScale = useRef(new Animated.Value(1)).current;
   const headerAnim = useRef(new Animated.Value(0)).current;
 
@@ -118,10 +119,10 @@ export default function TodayScreen() {
           </View>
 
           {/* Pro banner */}
-          {!isPro && (
+          {!isPro && !bannerDismissed && (
             <ProBanner
               onUpgrade={() => router.push('/settings')}
-              onDismiss={() => {}}
+              onDismiss={() => setBannerDismissed(true)}
             />
           )}
 
