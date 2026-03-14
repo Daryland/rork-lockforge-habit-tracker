@@ -104,7 +104,7 @@ export default function AnalyticsScreen() {
       <SafeAreaView style={styles.safe} edges={['top']}>
         <View style={styles.header}>
           <Text style={styles.title}>Analytics</Text>
-          {isPro && (
+          {!isPro && (
             <View style={styles.proBadge}>
               <Zap size={12} color={Colors.orange} />
               <Text style={styles.proBadgeText}>Pro</Text>
@@ -146,23 +146,13 @@ export default function AnalyticsScreen() {
               <Text style={styles.cardTitle}>AI Insight</Text>
               {!isPro && <View style={styles.proTag}><Text style={styles.proTagText}>PRO</Text></View>}
             </View>
-            {isPro ? (
-              <>
-                <Text style={styles.insightText}>{AI_INSIGHTS[insightIndex]}</Text>
-                <Pressable
-                  style={styles.nextInsight}
-                  onPress={() => setInsightIndex((insightIndex + 1) % AI_INSIGHTS.length)}
-                >
-                  <Text style={styles.nextInsightText}>Next insight →</Text>
-                </Pressable>
-              </>
-            ) : (
-              <View style={styles.insightLocked}>
-                <Text style={styles.insightLockedIcon}>🔒</Text>
-                <Text style={styles.insightLockedTitle}>Coming Soon</Text>
-                <Text style={styles.insightLockedSub}>AI-powered insights are part of LockForge Pro. In-app purchases launching soon.</Text>
-              </View>
-            )}
+            <Text style={styles.insightText}>{AI_INSIGHTS[insightIndex]}</Text>
+            <Pressable
+              style={styles.nextInsight}
+              onPress={() => setInsightIndex((insightIndex + 1) % AI_INSIGHTS.length)}
+            >
+              <Text style={styles.nextInsightText}>Next insight →</Text>
+            </Pressable>
           </View>
 
           {/* Top habit */}
@@ -337,26 +327,6 @@ const styles = StyleSheet.create({
     color: Colors.navyLight,
     fontSize: 13,
     fontWeight: '700',
-  },
-  insightLocked: {
-    alignItems: 'center',
-    paddingVertical: 8,
-    gap: 6,
-  },
-  insightLockedIcon: {
-    fontSize: 28,
-  },
-  insightLockedTitle: {
-    color: Colors.text,
-    fontSize: 15,
-    fontWeight: '800',
-  },
-  insightLockedSub: {
-    color: Colors.textMuted,
-    fontSize: 13,
-    fontWeight: '500',
-    textAlign: 'center',
-    lineHeight: 18,
   },
   proTag: {
     backgroundColor: Colors.orange,

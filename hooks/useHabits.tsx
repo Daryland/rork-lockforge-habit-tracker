@@ -100,9 +100,6 @@ export const [HabitsProvider, useHabits] = createContextHook(() => {
   }, []);
 
   const addHabit = useCallback(async (habit: Omit<Habit, 'id' | 'createdAt' | 'completions' | 'streak' | 'bestStreak' | 'isActive'>) => {
-    if (!isPro && habits.length >= 3) {
-      return null;
-    }
     const newHabit: Habit = {
       ...habit,
       id: `habit-${Date.now()}`,
@@ -115,7 +112,7 @@ export const [HabitsProvider, useHabits] = createContextHook(() => {
     const updated = [...habits, newHabit];
     await saveHabits(updated);
     return newHabit;
-  }, [habits, saveHabits, isPro]);
+  }, [habits, saveHabits]);
 
   const updateHabit = useCallback(async (id: string, changes: Partial<Habit>) => {
     const updated = habits.map(h => h.id === id ? { ...h, ...changes } : h);

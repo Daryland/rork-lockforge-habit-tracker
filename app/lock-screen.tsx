@@ -85,9 +85,12 @@ export default function LockScreen() {
   const handleBreakLock = () => {
     if (!isPro) {
       Alert.alert(
-        '🔒 Pro Feature — Coming Soon',
-        'Emergency break lock is a LockForge Pro feature. In-app purchases are launching soon — stay locked in for now! 💪',
-        [{ text: 'Stay Locked 💪', style: 'cancel' }]
+        'Pro Feature',
+        'Emergency break requires LockForge Pro. This keeps you accountable on the free plan.',
+        [
+          { text: 'Stay Locked 💪', style: 'cancel' },
+          { text: 'Upgrade to Pro', onPress: () => {} },
+        ]
       );
       return;
     }

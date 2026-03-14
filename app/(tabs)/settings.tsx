@@ -47,15 +47,25 @@ export default function SettingsScreen() {
   const handleUpgrade = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     Alert.alert(
-      '⚡ LockForge Pro — Coming Soon',
-      'In-app purchases are launching soon!\n\nLockForge Pro will unlock:\n✅ Unlimited habits\n✅ AI reminders & insights\n✅ Custom lock rules\n✅ Export data\n✅ Emergency lock PIN\n✅ Priority support\n\nStay tuned for $4.99/month.',
-      [{ text: 'Got It!', style: 'default' }]
+      'Upgrade to LockForge Pro',
+      '$4.99/month\n\n✅ Unlimited habits\n✅ AI reminders & insights\n✅ Custom lock rules\n✅ Export data\n✅ Emergency lock PIN\n✅ Priority support',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Subscribe — $4.99/mo',
+          style: 'default',
+          onPress: async () => {
+            await upgradeToPro();
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          },
+        },
+      ]
     );
   };
 
   const handleExport = () => {
     if (!isPro) {
-      Alert.alert('🔒 Pro Feature — Coming Soon', 'Data export is part of LockForge Pro. In-app purchases are launching soon!');
+      Alert.alert('Pro Feature', 'Export data is a Pro feature. Upgrade to unlock.');
       return;
     }
     Alert.alert('Export', 'Your habit data has been exported to CSV.');
@@ -209,7 +219,7 @@ export default function SettingsScreen() {
               subtitle={isPro ? "Set a PIN to break locks" : "Pro feature"}
               onPress={() => {
                 if (!isPro) {
-                  Alert.alert('🔒 Pro Feature — Coming Soon', 'Emergency PIN is part of LockForge Pro. In-app purchases are launching soon!');
+                  Alert.alert('Pro Feature', 'Emergency PIN requires Pro.');
                   return;
                 }
                 Alert.alert('Emergency PIN', 'Set a 6-digit PIN to bypass locks in emergencies.');
