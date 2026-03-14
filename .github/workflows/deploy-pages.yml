@@ -1,0 +1,62 @@
+name: Deploy LockForge Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'privacy.html'
+      - 'walkthrough.html'
+      - '.github/workflows/deploy-pages.yml'
+  workflow_dispatch: # allow manual trigger from GitHub UI
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build site
+        run: |
+          mkdir -p _site
+          cp privacy.html _site/
+          cp walkthrough.html _site/
+          # Index page that redirects to the walkthrough
+          cat > _site/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8" />
+            <meta http-equiv="refresh" content="0; url=walkthrough.html" />
+            <title>LockForge</title>
+          </head>
+          <body>
+            <p>Redirecting to <a href="walkthrough.html">App Walkthrough</a>…</p>
+          </body>
+          </html>
+          EOF
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
