@@ -19,7 +19,7 @@ export default function ProBanner({ onUpgrade, onDismiss, compact = false }: Pro
         Animated.timing(pulseAnim, { toValue: 1, duration: 900, useNativeDriver: true }),
       ])
     ).start();
-  }, []);
+  }, [pulseAnim]);
 
   if (compact) {
     return (
@@ -43,7 +43,7 @@ export default function ProBanner({ onUpgrade, onDismiss, compact = false }: Pro
       </View>
       <View style={styles.bannerRight}>
         <Pressable style={styles.upgradeBtn} onPress={onUpgrade}>
-          <Text style={styles.upgradeBtnText}>$4.99/mo</Text>
+          <Text style={styles.upgradeBtnText}>$1.99/mo</Text>
         </Pressable>
         {onDismiss && (
           <Pressable onPress={onDismiss} style={styles.dismiss}>

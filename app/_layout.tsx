@@ -6,7 +6,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { HabitsProvider } from "@/hooks/useHabits";
 import { Colors } from "@/constants/colors";
 
-SplashScreen.preventAutoHideAsync();
+void SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
 
@@ -38,6 +38,14 @@ function RootLayoutNav() {
           gestureEnabled: false,
         }}
       />
+      <Stack.Screen
+        name="paywall"
+        options={{
+          presentation: "modal",
+          headerShown: false,
+          gestureEnabled: true,
+        }}
+      />
       <Stack.Screen name="+not-found" />
     </Stack>
   );
@@ -45,7 +53,7 @@ function RootLayoutNav() {
 
 export default function RootLayout() {
   useEffect(() => {
-    SplashScreen.hideAsync();
+    void SplashScreen.hideAsync();
   }, []);
 
   return (

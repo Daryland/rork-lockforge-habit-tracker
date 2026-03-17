@@ -11,8 +11,10 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Zap, Shield, Bell, Heart, Download, ChevronRight, Check, Lock, Star } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
+import { router } from 'expo-router';
 import { Colors } from '@/constants/colors';
 import { useHabits } from '@/hooks/useHabits';
+import { useIsProRC, useRestorePurchases } from '@/hooks/useRevenueCat';
 
 interface SettingRowProps {
   icon: React.ReactNode;
@@ -39,28 +41,32 @@ function SettingRow({ icon, iconBg, title, subtitle, onPress, rightEl }: Setting
 }
 
 export default function SettingsScreen() {
-  const { isPro, upgradeToPro, habits } = useHabits();
+  const { isPro: isProLocal, habits } = useHabits();
+  const isProRC = useIsProRC();
+  const isPro = isProLocal || isProRC;
+  const restoreMutation = useRestorePurchases();
   const [notifications, setNotifications] = useState(true);
   const [healthSync, setHealthSync] = useState(true);
   const [aiReminders, setAiReminders] = useState(false);
 
   const handleUpgrade = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    Alert.alert(
-      'Upgrade to LockForge Pro',
-      '$4.99/month\n\n✅ Unlimited habits\n✅ AI reminders & insights\n✅ Custom lock rules\n✅ Export data\n✅ Emergency lock PIN\n✅ Priority support',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Subscribe — $4.99/mo',
-          style: 'default',
-          onPress: async () => {
-            await upgradeToPro();
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-          },
-        },
-      ]
-    );
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    router.push('/paywall');
+  };
+
+  const handleRestore = async () => {
+    try {
+      const info = await restoreMutation.mutateAsync();
+      const hasPro = info.entitlements?.active?.['pro'] !== undefined;
+      if (hasPro) {
+        void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        Alert.alert('Restored!', 'Your Pro subscription has been restored.');
+      } else {
+        Alert.alert('No Subscription', 'No active subscription found for this account.');
+      }
+    } catch (e: any) {
+      Alert.alert('Error', e?.message ?? 'Failed to restore purchases.');
+    }
   };
 
   const handleExport = () => {
@@ -101,7 +107,7 @@ export default function SettingsScreen() {
                 </View>
               </View>
               <View style={styles.proPrice}>
-                <Text style={styles.proPriceText}>$4.99</Text>
+                <Text style={styles.proPriceText}>$1.99</Text>
                 <Text style={styles.proPriceSub}>/mo</Text>
               </View>
             </Pressable>
@@ -243,6 +249,21 @@ export default function SettingsScreen() {
                 !isPro ? <View style={styles.proTag}><Text style={styles.proTagText}>PRO</Text></View> : undefined
               }
             />
+          </View>
+
+          {/* Restore */}
+          <Text style={styles.section}>Account</Text>
+          <View style={styles.group}>
+            <Pressable style={styles.row} onPress={handleRestore} disabled={restoreMutation.isPending}>
+              <View style={[styles.rowIcon, { backgroundColor: Colors.navyLight }]}>
+                <Download size={16} color="#fff" />
+              </View>
+              <View style={styles.rowInfo}>
+                <Text style={styles.rowTitle}>{restoreMutation.isPending ? 'Restoring...' : 'Restore Purchases'}</Text>
+                <Text style={styles.rowSub}>Recover previous subscriptions</Text>
+              </View>
+              <ChevronRight size={16} color={Colors.textMuted} />
+            </Pressable>
           </View>
 
           {/* Footer */}

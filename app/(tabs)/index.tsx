@@ -36,12 +36,12 @@ export default function TodayScreen() {
 
   useEffect(() => {
     Animated.timing(headerAnim, { toValue: 1, duration: 600, useNativeDriver: true }).start();
-  }, []);
+  }, [headerAnim]);
 
   const progress = todayTotal > 0 ? (todayCompleted / todayTotal) * 100 : 0;
 
   const handleFabPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     Animated.sequence([
       Animated.spring(fabScale, { toValue: 0.88, useNativeDriver: true, speed: 30 }),
       Animated.spring(fabScale, { toValue: 1, useNativeDriver: true, speed: 20 }),
@@ -120,7 +120,7 @@ export default function TodayScreen() {
           {/* Pro banner */}
           {!isPro && (
             <ProBanner
-              onUpgrade={() => router.push('/settings')}
+              onUpgrade={() => router.push('/paywall')}
               onDismiss={() => {}}
             />
           )}
